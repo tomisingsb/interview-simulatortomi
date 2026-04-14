@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Loader2, RefreshCw, Trophy } from "lucide-react";
 import { Sparkle } from "@/components/sparkle";
+import { VoiceRecorder } from "@/components/voice-recorder";
 import {
   DIFFICULTY_LABELS,
   QUESTION_TYPE_LABELS,
@@ -475,16 +476,28 @@ function AnsweringView({
           })}
         </div>
       ) : (
-        <textarea
-          className="input min-h-[280px] text-sm leading-relaxed"
-          placeholder={
-            type === "behavioral"
-              ? "Structure your answer with Situation, Task, Action, Result..."
-              : "Walk through your reasoning step by step..."
-          }
-          value={answer}
-          onChange={(e) => onAnswerChange(e.target.value)}
-        />
+        <div className="space-y-3">
+          <VoiceRecorder
+            disabled={loading}
+            onTranscribed={(text) => {
+              // Append to existing text if there's already content; otherwise replace.
+              onAnswerChange(answer.trim() ? `${answer.trim()}\n\n${text}` : text);
+            }}
+          />
+          <textarea
+            className="input min-h-[280px] text-sm leading-relaxed"
+            placeholder={
+              type === "behavioral"
+                ? "Structure your answer with Situation, Task, Action, Result... or tap RECORD above to answer by voice."
+                : "Walk through your reasoning step by step... or tap RECORD above to answer by voice."
+            }
+            value={answer}
+            onChange={(e) => onAnswerChange(e.target.value)}
+          />
+          <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-600">
+            Tip: review and edit the transcript before submitting.
+          </p>
+        </div>
       )}
 
       <div className="flex gap-3">
