@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Loader2, RefreshCw, Sparkles, Trophy } from "lucide-react";
+import { ArrowLeft, Loader2, RefreshCw, Trophy } from "lucide-react";
+import { Sparkle } from "@/components/sparkle";
 import {
   DIFFICULTY_LABELS,
   QUESTION_TYPE_LABELS,
@@ -50,7 +51,6 @@ export default function PracticePage() {
   const [jdLoading, setJdLoading] = useState(false);
   const [answerMode, setAnswerMode] = useState<AnswerMode>("freeform");
 
-  // Hydrate from sessionStorage
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem(STORAGE_KEY);
@@ -164,21 +164,32 @@ export default function PracticePage() {
   }
 
   return (
-    <main className="min-h-screen">
-      <header className="border-b border-zinc-200 bg-white">
+    <main className="min-h-screen relative">
+      {/* Decorative sparkles */}
+      <Sparkle className="size-5 text-gloss-yellow absolute top-32 right-[10%] opacity-70" />
+      <Sparkle className="size-3 text-gloss-pink absolute top-[40%] left-[6%] opacity-70" />
+      <Sparkle className="size-4 text-gloss-cyan absolute bottom-32 right-[8%] opacity-70" />
+
+      <header className="relative z-10 border-b border-ink-600/60 bg-ink-900/50 backdrop-blur">
         <div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-zinc-400 hover:text-white transition"
+          >
             <ArrowLeft className="size-4" />
-            Home
+            HOME
           </Link>
-          <span className="font-serif text-lg font-semibold">Interview Simulator</span>
-          <span className="w-12" />
+          <div className="flex items-center gap-2">
+            <Sparkle className="size-3 text-gloss-pink" />
+            <span className="display text-base">GLOSS</span>
+          </div>
+          <span className="badge-outline">PRACTICE</span>
         </div>
       </header>
 
-      <div className="mx-auto max-w-3xl px-6 py-10">
+      <div className="relative z-10 mx-auto max-w-3xl px-6 py-12">
         {error && (
-          <div className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          <div className="mb-6 rounded-2xl border-2 border-gloss-pink/40 bg-gloss-pink/10 px-4 py-3 text-sm text-gloss-pink font-medium">
             {error}
           </div>
         )}
@@ -251,14 +262,19 @@ function SetupView({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-3xl font-semibold">Set up your practice session</h1>
-        <p className="mt-2 text-sm text-zinc-600">
+        <span className="badge-yellow">SETUP</span>
+        <h1 className="display text-4xl md:text-5xl mt-3">
+          NEW
+          <br />
+          <span className="text-gloss-pink">SESSION.</span>
+        </h1>
+        <p className="mt-3 text-sm text-zinc-400">
           Pick a question type, difficulty, and (optionally) target a specific job.
         </p>
       </div>
 
-      <div className="card space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+      <div className="card space-y-6">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
             <label className="label">Question type</label>
             <select
@@ -289,23 +305,24 @@ function SetupView({
           </div>
         </div>
 
-        <label className="flex items-center gap-2 text-sm text-zinc-700">
+        <label className="flex items-center gap-3 text-sm text-zinc-300 cursor-pointer">
           <input
             type="checkbox"
             checked={state.wantMultipleChoice}
             onChange={(e) => update({ wantMultipleChoice: e.target.checked })}
-            className="size-4 rounded border-zinc-300 text-accent focus:ring-accent"
+            className="size-5 rounded-md border-ink-500 bg-ink-900 text-gloss-pink focus:ring-gloss-pink"
           />
           Generate multiple-choice answer options
         </label>
       </div>
 
       <div className="card space-y-4">
-        <div>
-          <h2 className="font-semibold text-zinc-900">Job description (optional)</h2>
-          <p className="mt-1 text-xs text-zinc-500">
-            Paste a URL or text. Questions will be tailored to the role.
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="label !mb-1">Job description</p>
+            <p className="text-xs text-zinc-500">Optional — paste a URL or text to tailor questions.</p>
+          </div>
+          <Sparkle className="size-3 text-gloss-cyan" />
         </div>
 
         <div className="flex gap-2">
@@ -317,11 +334,11 @@ function SetupView({
           />
           <button
             type="button"
-            className="btn-secondary"
+            className="btn-cyan"
             disabled={jdLoading || !jdUrl.trim()}
             onClick={onFetchJd}
           >
-            {jdLoading ? <Loader2 className="size-4 animate-spin" /> : "Fetch"}
+            {jdLoading ? <Loader2 className="size-4 animate-spin" /> : "FETCH"}
           </button>
         </div>
 
@@ -334,26 +351,26 @@ function SetupView({
         {state.jdText && (
           <button
             type="button"
-            className="text-xs text-zinc-500 hover:text-zinc-700 underline"
+            className="text-[11px] uppercase tracking-[0.14em] font-bold text-zinc-500 hover:text-gloss-pink transition"
             onClick={() => update({ jdText: "" })}
           >
-            Clear job description
+            CLEAR
           </button>
         )}
       </div>
 
       <button
-        className="btn-primary w-full py-3 text-base"
+        className="btn-primary w-full !py-4 text-base"
         disabled={loading}
         onClick={onGenerate}
       >
         {loading ? (
           <>
-            <Loader2 className="size-4 animate-spin" /> Generating...
+            <Loader2 className="size-4 animate-spin" /> GENERATING...
           </>
         ) : (
           <>
-            <Sparkles className="size-4" /> Generate Question
+            <Sparkle className="size-4" /> GENERATE QUESTION
           </>
         )}
       </button>
@@ -391,33 +408,39 @@ function AnsweringView({
   onCancel: () => void;
 }) {
   const hasMc = !!question.multipleChoice && question.multipleChoice.length > 0;
+  const typeBadgeCls =
+    type === "behavioral" ? "badge-pink" : type === "case" ? "badge-cyan" : "badge-purple";
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2 text-xs">
-        <span className="badge">{QUESTION_TYPE_LABELS[type]}</span>
-        <span className="badge">{DIFFICULTY_LABELS[difficulty]}</span>
+      <div className="flex items-center gap-2">
+        <span className={typeBadgeCls}>{QUESTION_TYPE_LABELS[type]}</span>
+        <span className="badge-yellow">{DIFFICULTY_LABELS[difficulty]}</span>
       </div>
 
-      <div className="card">
-        <p className="font-serif text-2xl leading-snug text-zinc-900">{question.question}</p>
+      <div className="card relative">
+        <Sparkle className="size-4 text-gloss-yellow absolute top-5 right-5 opacity-80" />
+        <p className="text-[11px] uppercase tracking-[0.14em] font-bold text-zinc-500 mb-3">QUESTION</p>
+        <p className="display text-2xl md:text-3xl leading-tight text-white normal-case">
+          {question.question}
+        </p>
       </div>
 
       {hasMc && (
-        <div className="flex gap-2 text-xs">
+        <div className="flex gap-2">
           <button
             type="button"
             onClick={() => setAnswerMode("freeform")}
-            className={`btn ${answerMode === "freeform" ? "bg-zinc-900 text-white" : "btn-ghost"}`}
+            className={answerMode === "freeform" ? "btn-pink" : "btn-ghost"}
           >
-            Free-form
+            FREE-FORM
           </button>
           <button
             type="button"
             onClick={() => setAnswerMode("multipleChoice")}
-            className={`btn ${answerMode === "multipleChoice" ? "bg-zinc-900 text-white" : "btn-ghost"}`}
+            className={answerMode === "multipleChoice" ? "btn-pink" : "btn-ghost"}
           >
-            Multiple choice
+            MULTIPLE CHOICE
           </button>
         </div>
       )}
@@ -430,19 +453,21 @@ function AnsweringView({
             return (
               <label
                 key={i}
-                className={`flex items-start gap-3 rounded-xl border p-4 cursor-pointer transition ${
-                  checked ? "border-accent bg-accent-light" : "border-zinc-200 bg-white hover:border-zinc-300"
+                className={`flex items-start gap-4 rounded-chunk border-2 p-5 cursor-pointer transition-all ${
+                  checked
+                    ? "border-gloss-cyan bg-gloss-cyan/10 glow-cyan"
+                    : "border-ink-600 bg-ink-800 hover:border-ink-500"
                 }`}
               >
                 <input
                   type="radio"
                   name="mc"
-                  className="mt-1"
+                  className="mt-1 size-5 accent-gloss-cyan"
                   checked={checked}
                   onChange={() => onChoiceChange(opt)}
                 />
-                <div className="text-sm">
-                  <span className="font-semibold mr-2">{letter}.</span>
+                <div className="text-sm text-zinc-200">
+                  <span className="display text-gloss-cyan mr-3 text-lg">{letter}.</span>
                   <span>{opt}</span>
                 </div>
               </label>
@@ -451,7 +476,7 @@ function AnsweringView({
         </div>
       ) : (
         <textarea
-          className="input min-h-[260px] text-sm leading-relaxed"
+          className="input min-h-[280px] text-sm leading-relaxed"
           placeholder={
             type === "behavioral"
               ? "Structure your answer with Situation, Task, Action, Result..."
@@ -463,17 +488,19 @@ function AnsweringView({
       )}
 
       <div className="flex gap-3">
-        <button className="btn-primary flex-1 py-3" disabled={loading} onClick={onSubmit}>
+        <button className="btn-primary flex-1 !py-4" disabled={loading} onClick={onSubmit}>
           {loading ? (
             <>
-              <Loader2 className="size-4 animate-spin" /> Evaluating...
+              <Loader2 className="size-4 animate-spin" /> EVALUATING...
             </>
           ) : (
-            "Submit for feedback"
+            <>
+              <Sparkle className="size-4" /> SUBMIT FOR FEEDBACK
+            </>
           )}
         </button>
-        <button className="btn-secondary" onClick={onCancel} disabled={loading}>
-          Cancel
+        <button className="btn-ghost !py-4" onClick={onCancel} disabled={loading}>
+          CANCEL
         </button>
       </div>
     </div>
@@ -496,48 +523,65 @@ function FeedbackView({
   onRetry: () => void;
 }) {
   const scoreColor =
-    feedback.overallScore >= 8 ? "text-emerald-600" : feedback.overallScore >= 5 ? "text-amber-600" : "text-red-600";
+    feedback.overallScore >= 8
+      ? "text-gloss-lime"
+      : feedback.overallScore >= 5
+      ? "text-gloss-yellow"
+      : "text-gloss-pink";
+  const scoreCardCls =
+    feedback.overallScore >= 8 ? "card-cyan" : feedback.overallScore >= 5 ? "card-yellow" : "card-pink";
 
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <span className="badge">{QUESTION_TYPE_LABELS[type]}</span>
-          <h1 className="mt-3 font-serif text-3xl font-semibold">Feedback</h1>
+          <span className="badge-purple">{QUESTION_TYPE_LABELS[type]}</span>
+          <h1 className="display text-5xl mt-3">
+            FEED
+            <br />
+            <span className="text-gloss-cyan">BACK.</span>
+          </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <Trophy className={`size-6 ${scoreColor}`} />
-          <span className={`font-serif text-4xl font-semibold ${scoreColor}`}>
+        <div className={`${scoreCardCls} !p-5 text-center min-w-[120px]`}>
+          <Trophy className="size-5 mx-auto opacity-80" />
+          <p className="text-[10px] font-bold tracking-[0.18em] uppercase mt-2 opacity-80">SCORE</p>
+          <p className="display text-5xl mt-1">
             {feedback.overallScore}
-          </span>
-          <span className="text-zinc-400 text-lg">/10</span>
+            <span className="text-2xl opacity-60">/10</span>
+          </p>
         </div>
       </div>
 
       <div className="card">
-        <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2">Question</p>
-        <p className="text-sm text-zinc-800 leading-relaxed">{question}</p>
+        <p className="text-[11px] uppercase tracking-[0.14em] font-bold text-zinc-500 mb-2">QUESTION</p>
+        <p className="text-sm text-zinc-300 leading-relaxed">{question}</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="card">
-          <h3 className="font-semibold text-emerald-700 mb-3">Strengths</h3>
-          <ul className="space-y-2 text-sm text-zinc-700">
+        <div className="card border-2 border-gloss-lime/40">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkle className="size-3 text-gloss-lime" />
+            <h3 className="display text-gloss-lime text-lg">STRENGTHS</h3>
+          </div>
+          <ul className="space-y-3 text-sm text-zinc-300">
             {feedback.strengths.map((s, i) => (
-              <li key={i} className="flex gap-2">
-                <span className="text-emerald-600">✓</span>
-                <span>{s}</span>
+              <li key={i} className="flex gap-3">
+                <span className="text-gloss-lime font-bold">+</span>
+                <span className="leading-relaxed">{s}</span>
               </li>
             ))}
           </ul>
         </div>
-        <div className="card">
-          <h3 className="font-semibold text-amber-700 mb-3">Areas for improvement</h3>
-          <ul className="space-y-2 text-sm text-zinc-700">
+        <div className="card border-2 border-gloss-orange/40">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkle className="size-3 text-gloss-orange" />
+            <h3 className="display text-gloss-orange text-lg">IMPROVE</h3>
+          </div>
+          <ul className="space-y-3 text-sm text-zinc-300">
             {feedback.improvements.map((s, i) => (
-              <li key={i} className="flex gap-2">
-                <span className="text-amber-600">→</span>
-                <span>{s}</span>
+              <li key={i} className="flex gap-3">
+                <span className="text-gloss-orange font-bold">→</span>
+                <span className="leading-relaxed">{s}</span>
               </li>
             ))}
           </ul>
@@ -546,33 +590,39 @@ function FeedbackView({
 
       {feedback.starBreakdown && (
         <div className="card">
-          <h3 className="font-semibold text-zinc-900 mb-4">STAR Breakdown</h3>
-          <div className="grid gap-4 md:grid-cols-2">
-            <StarItem label="Situation" value={feedback.starBreakdown.situation} />
-            <StarItem label="Task" value={feedback.starBreakdown.task} />
-            <StarItem label="Action" value={feedback.starBreakdown.action} />
-            <StarItem label="Result" value={feedback.starBreakdown.result} />
+          <div className="flex items-center gap-2 mb-5">
+            <Sparkle className="size-3 text-gloss-pink" />
+            <h3 className="display text-gloss-pink text-lg">STAR BREAKDOWN</h3>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2">
+            <StarItem label="SITUATION" color="text-gloss-pink" value={feedback.starBreakdown.situation} />
+            <StarItem label="TASK" color="text-gloss-cyan" value={feedback.starBreakdown.task} />
+            <StarItem label="ACTION" color="text-gloss-yellow" value={feedback.starBreakdown.action} />
+            <StarItem label="RESULT" color="text-gloss-lime" value={feedback.starBreakdown.result} />
           </div>
         </div>
       )}
 
       <div className="flex gap-3">
-        <button className="btn-primary flex-1 py-3" onClick={onTryAnother}>
-          <Sparkles className="size-4" /> New question
+        <button className="btn-primary flex-1 !py-4" onClick={onTryAnother}>
+          <Sparkle className="size-4" /> NEW QUESTION
         </button>
-        <button className="btn-secondary py-3" onClick={onRetry}>
-          <RefreshCw className="size-4" /> Retry this one
+        <button className="btn-cyan !py-4" onClick={onRetry}>
+          <RefreshCw className="size-4" /> RETRY
         </button>
       </div>
+
+      {/* Score color marker (used by scoreColor classnames so Tailwind purge keeps them) */}
+      <span className={`hidden ${scoreColor}`} />
     </div>
   );
 }
 
-function StarItem({ label, value }: { label: string; value: string }) {
+function StarItem({ label, value, color }: { label: string; value: string; color: string }) {
   return (
     <div>
-      <p className="text-xs font-semibold uppercase tracking-wide text-accent mb-1">{label}</p>
-      <p className="text-sm text-zinc-700 leading-relaxed">{value}</p>
+      <p className={`text-[11px] font-bold uppercase tracking-[0.14em] mb-1.5 ${color}`}>{label}</p>
+      <p className="text-sm text-zinc-300 leading-relaxed">{value}</p>
     </div>
   );
 }
